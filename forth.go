@@ -1,11 +1,11 @@
 package main
 
 import (
-    "forth/lexer"
-    "bufio"
-    "fmt"
-    "io"
-    "os"
+	"bufio"
+	"fmt"
+	"forth/lexer"
+	"io"
+	"os"
 )
 
 const PROMPT = ">>"
