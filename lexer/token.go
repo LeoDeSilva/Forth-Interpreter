@@ -1,4 +1,4 @@
-package token 
+package lexer 
 
 type Token struct {
     Type string 

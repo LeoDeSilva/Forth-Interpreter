@@ -1,8 +1,8 @@
 package lexer 
 
-import (
-    "forth/token"
-)
+//import (
+    //"forth/""
+//)
 
 type Lexer struct {
     input string
@@ -37,74 +37,74 @@ func (l *Lexer) peekChar() byte {
     }
 }
 
-func newToken(tokenType string, ch byte) token.Token {
-    return token.Token{Type:tokenType,Literal:string(ch)}
+func newToken(tokenType string, ch byte) Token {
+    return Token{Type:tokenType,Literal:string(ch)}
 }
 
 
-func (l *Lexer) NextToken() token.Token {
-    var tok token.Token
+func (l *Lexer) NextToken() Token {
+    var tok Token
     l.eatWhitespace()
 
     switch l.ch {
         case ':':
-            tok = newToken(token.COLON, l.ch)
+            tok = newToken(COLON, l.ch)
         case ';':
-            tok = newToken(token.SEMICOLON, l.ch)
+            tok = newToken(SEMICOLON, l.ch)
         case '.':
-            tok = newToken(token.DOT, l.ch)
+            tok = newToken(DOT, l.ch)
         case ',':
-            tok = newToken(token.COMMA, l.ch)
+            tok = newToken(COMMA, l.ch)
         case '=':
-            tok = l.readDouble(token.EQ,'=',token.EE)
+            tok = l.readDouble(EQ,'=',EE)
         case '>':
-            tok = l.readDouble(token.GT,'=',token.GTE)
+            tok = l.readDouble(GT,'=',GTE)
         case '<':
-            tok = l.readDouble(token.LT,'=',token.LTE)
+            tok = l.readDouble(LT,'=',LTE)
         case '+':
-            tok = l.readDouble(token.ADD,'!',token.ADD_EQ)
+            tok = l.readDouble(ADD,'!',ADD_EQ)
         case '-':
-            tok = l.readDouble(token.SUB,'!',token.SUB_EQ)
+            tok = l.readDouble(SUB,'!',SUB_EQ)
         case '/':
-            tok = l.readDouble(token.DIV,'!',token.DIV_EQ)
+            tok = l.readDouble(DIV,'!',DIV_EQ)
         case '*':
-            tok = l.readDouble(token.MUL,'!',token.MUL_EQ)
+            tok = l.readDouble(MUL,'!',MUL_EQ)
         case '%':
-            tok = newToken(token.MOD, l.ch)
+            tok = newToken(MOD, l.ch)
         case '@':
-            tok = newToken(token.AT, l.ch)
+            tok = newToken(AT, l.ch)
         case '$':
-            tok = newToken(token.DOLLAR, l.ch)
+            tok = newToken(DOLLAR, l.ch)
         case '?':
-            tok = newToken(token.QUESTION, l.ch)
+            tok = newToken(QUESTION, l.ch)
         case '"':
             tok.Literal = l.readString()
-            tok.Type = token.STRING
+            tok.Type = STRING
         case '!':
-            tok = l.readDouble(token.NOT,'=',token.NE)
+            tok = l.readDouble(NOT,'=',NE)
         case '(':
-            tok = newToken(token.LPAREN, l.ch)
+            tok = newToken(LPAREN, l.ch)
         case ')':
-            tok = newToken(token.RPAREN, l.ch)
+            tok = newToken(RPAREN, l.ch)
         case '{':
-            tok = newToken(token.LBRACE, l.ch)
+            tok = newToken(LBRACE, l.ch)
         case '}':
-            tok = newToken(token.RBRACE, l.ch)
+            tok = newToken(RBRACE, l.ch)
         case 0:
             tok.Literal = ""
-            tok.Type = token.EOF
+            tok.Type = EOF
         default:
             if isLetter(l.ch) {
                 tok.Literal = l.readIdentifier()
-                tok.Type = token.LookupIdentifier(tok.Literal)
+                tok.Type = LookupIdentifier(tok.Literal)
                 return tok
             } else if isDigit(l.ch) {
-                tok.Type = token.INT
+                tok.Type = INT
                 tok.Literal = l.readNumber()
                 return tok
                 
             } else {
-                tok = newToken(token.ILLEGAL, l.ch)
+                tok = newToken(ILLEGAL, l.ch)
             }
 
     }
@@ -155,12 +155,12 @@ func (l *Lexer) readString() string {
     return l.input[position:l.position]
 }
 
-func (l *Lexer) readDouble(firstType string, second byte, secondType string) token.Token {
+func (l *Lexer) readDouble(firstType string, second byte, secondType string) Token {
     ch := l.ch
     if  l.peekChar() == second {
         l.readChar()
-        return token.Token{Type:secondType,Literal:string(ch) + string(l.ch)}
+        return Token{Type:secondType,Literal:string(ch) + string(l.ch)}
     } else {
-        return token.Token{Type:firstType,Literal:string(ch)}
+        return Token{Type:firstType,Literal:string(ch)}
     }
 }
