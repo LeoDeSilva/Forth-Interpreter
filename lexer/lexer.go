@@ -1,9 +1,5 @@
 package lexer 
 
-//import (
-    //"forth/""
-//)
-
 type Lexer struct {
     input string
     position int
@@ -11,11 +7,23 @@ type Lexer struct {
     ch byte
 }
 
-
 func New(input string) *Lexer {
     l := &Lexer{input: input}
     l.readChar()
     return l
+}
+
+func (l *Lexer) Lex() []Token {
+    var tokens []Token
+
+    for l.ch != 0 {
+        tok := l.NextToken()
+        tokens = append(tokens, tok)
+    }
+
+    tokens = append(tokens, Token{Type:EOF, Literal:""})
+
+    return tokens
 }
 
 func (l *Lexer) readChar() {
@@ -90,9 +98,6 @@ func (l *Lexer) NextToken() Token {
             tok = newToken(LBRACE, l.ch)
         case '}':
             tok = newToken(RBRACE, l.ch)
-        case 0:
-            tok.Literal = ""
-            tok.Type = EOF
         default:
             if isLetter(l.ch) {
                 tok.Literal = l.readIdentifier()
@@ -164,3 +169,4 @@ func (l *Lexer) readDouble(firstType string, second byte, secondType string) Tok
         return Token{Type:firstType,Literal:string(ch)}
     }
 }
+
