@@ -53,5 +53,23 @@ func TestNextToken(t *testing.T) {
     }
  }
 
-
-
+func TestLookupIdentifier(t *testing.T) {
+	tests := []struct {
+		Type string 
+		Literal string
+	}{
+		{IF,"if"},
+		{IDENTIFIER,"hello"},
+		{THEN, "then"},
+		{LOOP,"loop"},
+		{IDENTIFIER,"lood"},
+		{IDENTIFIER,"add"},
+		{VARIABLE,"variable"},
+		{IDENTIFIER,"Variable"},
+	}
+	for i, tt := range tests {
+		if LookupIdentifier(tt.Literal) != tt.Type {
+			t.Fatalf("tests[%d] - type wrong. expected %q, got %q",i,LookupIdentifier(tt.Literal),tt.Type)
+		}
+	}
+}
