@@ -86,4 +86,8 @@ const (
 	AND      = "AND"
 	OR       = "OR"
 	VARIABLE = "VARIABLE"
+
+	// Parser Nodes
+	PROGRAM = "PROGRAM"
+	WHILE   = "WHILE"
 )

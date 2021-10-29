@@ -11,11 +11,11 @@ import (
 
 const PROMPT = ">>"
 
-func startRepl(in io.Reader) {
+func startRepl(in io.Reader, out io.Writer) {
     scanner := bufio.NewScanner(in)
 
     for {
-        fmt.Printf(PROMPT)
+        fmt.Fprintf(out,PROMPT)
         scanned := scanner.Scan()
 
         if !scanned {
@@ -37,5 +37,5 @@ func startRepl(in io.Reader) {
 
 
 func main(){
-    startRepl(os.Stdin)
+    startRepl(os.Stdin, os.Stdout)
 }

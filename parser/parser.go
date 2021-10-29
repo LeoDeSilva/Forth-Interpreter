@@ -1,15 +1,23 @@
 package parser
 
 import (
+	"fmt"
 	"forth/lexer"
 )
 
 type ProgramNode struct {
-	statemets []interface{}
+	Type string 
+	Statemets []interface{}
 }
 
 type IfNode struct {
-	consequence []interface{}
+	Type string
+	Consequence []interface{}
+}
+
+type WhileNode struct {
+	Type string 
+	Consequence []interface{}
 }
 
 type Parser struct {
@@ -32,12 +40,12 @@ func New(tokens []lexer.Token) *Parser{
 }
 
 func (p *Parser) Parse() (ProgramNode, bool) {
-	var ast ProgramNode
+	ast := ProgramNode{Type:lexer.PROGRAM}
 
 	for p.position < len(p.tokens) {
 		token,err := p.ParseToken()
 		if err {return ast, true}
-		ast.statemets = append(ast.statemets, token)
+		ast.Statemets = append(ast.Statemets, token)
 		p.advance()
 	}
 
@@ -46,13 +54,58 @@ func (p *Parser) Parse() (ProgramNode, bool) {
 
 func (p *Parser) ParseToken() (interface{},bool) {
 	var node interface{}
+	var err bool
 
 	switch p.token.Type {
 		case lexer.IF:
-			node = IfNode{}
+			node, err = p.parseIfNode()
+			if err {return node, true}
+		case lexer.DO:
+			node, err = p.parseWhileNode()
+			if err {return node, true}
 		default:
 			node = p.token
 	}
 
+	return node, false
+}
+
+func (p *Parser) parseIfNode() (IfNode, bool) {
+	node := IfNode{Type:lexer.IF}
+	p.advance()
+
+	for p.token.Type != lexer.THEN {
+		subNode, err := p.ParseToken()
+		if err {return node, true}
+		node.Consequence = append(node.Consequence, subNode)
+
+		if p.position >= len(p.tokens) {
+			fmt.Println("Expected 'then' If statement")
+			return node, true
+		}
+
+		p.advance()
+	}
+	
+	return node, false
+}
+
+func (p *Parser) parseWhileNode() (WhileNode, bool) {
+	node := WhileNode{Type:lexer.WHILE}
+	p.advance()
+
+	for p.token.Type != lexer.LOOP {
+		subNode, err := p.ParseToken()
+		if err {return node, true}
+		node.Consequence = append(node.Consequence, subNode)
+
+		if p.position >= len(p.tokens) {
+			fmt.Println("Expected 'loop' DO statement")
+			return node, true
+		}
+
+		p.advance()
+	}
+	
 	return node, false
 }
