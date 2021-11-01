@@ -3,10 +3,11 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"forth/lexer"
-	"forth/parser"
 	"io"
 	"os"
+	"forth/lexer"
+	"forth/parser"
+  //"forth/evaluator"
 )
 
 const PROMPT = ">>"
@@ -32,6 +33,7 @@ func startRepl(in io.Reader, out io.Writer) {
         ast, err := p.Parse()
         if err {continue}
         fmt.Println(ast)
+
     }
 }
 

@@ -110,7 +110,6 @@ func (l *Lexer) NextToken() Token {
 		} else {
 			tok = newToken(ILLEGAL, l.ch)
 		}
-
 	}
 
 	l.readChar()
