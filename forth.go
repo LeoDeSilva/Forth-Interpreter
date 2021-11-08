@@ -8,17 +8,16 @@ import (
 	"forth/parser"
 	"io"
 	"os"
+	"strings"
 )
 
 
-const PROMPT = ">>"
-
 func startRepl(in io.Reader, out io.Writer) {
     scanner := bufio.NewScanner(in)
-    environment := &evaluator.Environment{Variables: make(map[string]interface{})}
+    environment := &evaluator.Environment{Variables: make(map[int]int), Stack: make([]interface{},0), Identifiers: make(map[string]int)}
 
     for {
-        fmt.Fprintf(out,PROMPT)
+        fmt.Fprintf(out,">>")
         scanned := scanner.Scan()
 
         if !scanned {
@@ -27,7 +26,7 @@ func startRepl(in io.Reader, out io.Writer) {
 
         line := scanner.Text()
 
-        l := lexer.New(line)
+        l := lexer.New(strings.TrimSpace(line))
         tokens := l.Lex()
 
         p := parser.New(tokens)
@@ -37,6 +36,8 @@ func startRepl(in io.Reader, out io.Writer) {
         e := evaluator.New(ast,environment)
         err = e.Evaluate()
         if err {continue}
+
+        fmt.Println(environment.Stack)
     }
 }
 

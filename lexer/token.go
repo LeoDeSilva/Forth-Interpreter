@@ -19,6 +19,7 @@ var keywords = map[string]string{
 	"and":      AND,
 	"or":       OR,
 	"variable": VARIABLE,
+	"over":     OVER,
 }
 
 func LookupIdentifier(identifier string) string {
@@ -81,6 +82,7 @@ const (
 	ROT  = "ROT"
 	DROP = "DROP"
 	NIP  = "NIP"
+	OVER = "OVER"
 
 	INVERT   = "INVERT"
 	AND      = "AND"
@@ -88,6 +90,7 @@ const (
 	VARIABLE = "VARIABLE"
 
 	// Parser Nodes
-	PROGRAM = "PROGRAM"
-	WHILE   = "WHILE"
+	PROGRAM  = "PROGRAM"
+	WHILE    = "WHILE"
+	FUNCTION = "FUNCTION"
 )
