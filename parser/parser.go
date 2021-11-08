@@ -156,6 +156,5 @@ func (p *Parser) parseFunctionNode() (FunctionNode, bool) {
 		}
 		p.advance()
 	}
-
 	return node, false
 }

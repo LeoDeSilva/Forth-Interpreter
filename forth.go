@@ -14,7 +14,7 @@ import (
 
 func startRepl(in io.Reader, out io.Writer) {
     scanner := bufio.NewScanner(in)
-    environment := &evaluator.Environment{Variables: make(map[int]int), Stack: make([]interface{},0), Identifiers: make(map[string]int)}
+    environment := &evaluator.Environment{Functions:make(map[string]parser.ProgramNode), Variables: make(map[int]int), Stack: make([]interface{},0), Identifiers: make(map[string]int)}
 
     for {
         fmt.Fprintf(out,">>")
