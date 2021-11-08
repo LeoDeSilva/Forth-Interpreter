@@ -92,6 +92,7 @@ func (e *Evaluator) EvalToken(token lexer.Token) bool {
 	case lexer.DOT:
 		fmt.Println(e.environment.Stack[len(e.environment.Stack) - 1])
 		e.environment.Stack, _ = pop(e.environment.Stack)
+
 	case lexer.NOT:
 		var id, value interface{}
 		e.environment.Stack, id = pop(e.environment.Stack)
@@ -153,21 +154,13 @@ func (e *Evaluator) EvalToken(token lexer.Token) bool {
 	case lexer.DUP:
 		e.environment.Stack = append(e.environment.Stack, e.environment.Stack[len(e.environment.Stack) - 1])
 
-	case lexer.ADD:
+	case lexer.ADD,lexer.SUB,lexer.MUL,lexer.DIV,lexer.MOD:
 		err := e.arith()
 		if err {return true}
-	case lexer.SUB:
-		err := e.arith()
-		if err {return true}
-	case lexer.MUL:
-		err := e.arith()
-		if err {return true}
-	case lexer.DIV:
-		err := e.arith()
-		if err {return true}
-	case lexer.MOD:
-		err := e.arith()
-		if err {return true}
+
+	case lexer.ADD_EQ:
+		err := e.EQarith()
+		if err{return true}	
 	}
 
 	return false
@@ -180,7 +173,6 @@ func (e *Evaluator) arith() bool {
 	e.environment.Stack, second = pop(e.environment.Stack)
 	e.environment.Stack, first = pop(e.environment.Stack)
 
-
 	switch node.Type{
 	case lexer.ADD:
 		e.environment.Stack = append(e.environment.Stack, first.(int)+second.(int))
@@ -191,8 +183,29 @@ func (e *Evaluator) arith() bool {
 	case lexer.DIV:
 		e.environment.Stack = append(e.environment.Stack, first.(int)/second.(int))
 	case lexer.MOD:
-		fmt.Println("MED")
 		e.environment.Stack = append(e.environment.Stack, first.(int)%second.(int))
 	}
+	return false
+}
+
+func (e *Evaluator) EQarith() bool {
+	node := e.node.(lexer.Token)
+
+	var id, value interface{}
+	var result int
+	e.environment.Stack, id = pop(e.environment.Stack)
+	e.environment.Stack, value = pop(e.environment.Stack)
+
+	switch node.Type{
+	case lexer.ADD_EQ:
+		result = value.(int) + e.environment.Variables[id.(int)]
+	case lexer.SUB_EQ:
+		result = value.(int) - e.environment.Variables[id.(int)]
+	case lexer.MUL_EQ:
+		result = value.(int) * e.environment.Variables[id.(int)]
+	case lexer.DIV_EQ:
+		result = value.(int) / e.environment.Variables[id.(int)]
+	}
+	e.environment.Variables[id.(int)] = result
 	return false
 }
