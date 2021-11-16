@@ -26,6 +26,7 @@ func startRepl(in io.Reader, out io.Writer) {
 
         line := scanner.Text()
 
+        // Format String For Parser
         l := lexer.New(strings.TrimSpace(line))
         tokens := l.Lex()
 
